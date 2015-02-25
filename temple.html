@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=utf-8 />
+  <title></title>
+  <script type="text/javascript" src="temple_utils.js"></script>
+  <script type="text/javascript" src="app.js"></script>
+  <script type="text/javascript" src="dom-delegate.js"></script>
+
+  <style type="text/css">
+  .ticket{
+    float: left;
+    border: 1px solid red;
+  }
+  .ticket > div{
+    float: left;
+  }
+  </style>
+
+
+  <!--[if IE]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div id="test"></div>
+  <script type="text/javascript">
+    data = {}
+    tickets = []
+    for(j=0;j<100;j++){
+      for(i=0;i<300;i++){
+        data['test' + i] = Math.random();
+      }
+      tickets.push(data)
+    }
+
+
+    container = document.getElementById('test');
+    t = +(new Date());
+    templates_list.single_ticket.build_cache({single_ticket: 1000});
+    console.log('cache: ', +(new Date()) - t);
+
+    t = +(new Date());
+    container.innerHTML = '';
+    for(i=0;i<20;i++){
+      var ticket = window.templates_list.single_ticket.get("single_ticket");
+      ticket[1].update(tickets[i]);
+      container.appendChild(ticket[0]);
+    }
+    console.log('redraw0', +(new Date()) - t);
+
+    t = +(new Date());
+    container.innerHTML = '';
+    tickets[1]['test5'] = 'asdasdasdasdsdsdsdsdsdsdsdasdasdasdasdasd';
+    for(i=0;i<20;i++){
+      var ticket = window.templates_list.single_ticket.get("single_ticket");
+      ticket[1].update(tickets[i]);
+      container.appendChild(ticket[0]);
+    }
+    console.log('redraw1', +(new Date()) - t);
+
+    t = +(new Date());
+    container.innerHTML = '';
+    tickets[0]['test1'] = '00000000';
+    tickets[0]['test2'] = '00000000';
+    tickets[1]['test1'] = '00000000';
+    tickets[2]['test2'] = '00000000';
+    for(i=0;i<100;i++){
+      var ticket = window.templates_list.single_ticket.get("single_ticket");
+      ticket[1].update(tickets[i]);
+      container.appendChild(ticket[0]);
+    }
+    console.log('redraw1', +(new Date()) - t);
+  </script>
+</body>
+</html>

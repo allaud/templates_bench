@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=utf-8 />
+  <title></title>
+  <script type="text/javascript" src="react.js"></script>
+  <script type="text/javascript" src="immutable.min.js"></script>
+  <script type="text/javascript" src="ticket.js"></script>
+
+  <style type="text/css">
+  .ticket{
+    float: left;
+    border: 1px solid red;
+  }
+  .ticket > div{
+    float: left;
+  }
+  </style>
+
+
+  <!--[if IE]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div id="test"></div>
+  <script type="text/javascript">
+    tickets = [];
+    data = {};
+    for(j=0;j<100;j++){
+      for(i=0;i<300;i++){
+        data['test' + i] = Math.random();
+      }
+      tickets.push(data);
+    }
+
+    console.log('cache: ', 0);
+
+    container = document.getElementById('test');
+    t = +(new Date());
+
+    //ticket_obj = React.render(React.createElement(ticket, {data: data}), container);
+    var Wrapper = React.createClass({
+      displayName: "Wrapper",
+      getInitialState: function() {
+        return {tickets: this.props.data};
+      },
+      render: function() {
+        var rows = [];
+        for (var i=0; i < 100; i++) {
+          rows.push(React.createElement(Ticket, {
+            tickets: this.state.tickets,
+            index: i,
+            ticket: this.state.tickets[i]
+          }));
+        }
+        return React.createElement("div", null, rows);
+      }
+    });
+    wrapper_obj = React.render(React.createElement(Wrapper, {data: tickets}), container);
+
+    console.log('draw: ', +(new Date()) - t);
+
+    t = +(new Date());
+    wrapper_obj.setState({tickets: tickets});
+    console.log('redraw0', +(new Date()) - t);
+
+    t = +(new Date());
+    tickets[1] = React.addons.update(tickets[1], {'test5': {$set: 'asdasdasdasdsdsdsdsdsdsdsdasdasdasdasdasd'}})
+    wrapper_obj.setState({tickets: tickets});
+    console.log('redraw1', +(new Date()) - t);
+
+    t = +(new Date());
+    tickets[0] = React.addons.update(tickets[0], {'test1': {$set: '00000000'}})
+    tickets[0] = React.addons.update(tickets[0], {'test2': {$set: '00000000'}})
+    tickets[1] = React.addons.update(tickets[1], {'test1': {$set: '00000000'}})
+    tickets[2] = React.addons.update(tickets[1], {'test2': {$set: '00000000'}})
+    wrapper_obj.setState({tickets: tickets});
+    console.log('redraw2', +(new Date()) - t);
+
+  </script>
+</body>
+</html>
