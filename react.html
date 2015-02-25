@@ -45,11 +45,14 @@
       getInitialState: function() {
         return {tickets: this.props.data};
       },
+      getTickets: function(){
+        return this.state.tickets;
+      },
       render: function() {
         var rows = [];
         for (var i=0; i < 100; i++) {
           rows.push(React.createElement(Ticket, {
-            tickets: this.state.tickets,
+            getTickets: this.getTickets,
             index: i,
             ticket: this.state.tickets[i]
           }));
@@ -66,16 +69,23 @@
     console.log('redraw0', +(new Date()) - t);
 
     t = +(new Date());
-    tickets[1] = React.addons.update(tickets[1], {'test5': {$set: 'asdasdasdasdsdsdsdsdsdsdsdasdasdasdasdasd'}})
-    wrapper_obj.setState({tickets: tickets});
+    changed_ticket = React.addons.update(tickets[1], {'test5': {$set: 'asdasdasdasdsdsdsdsdsdsdsdasdasdasdasdasd'}})
+    new_tickets = React.addons.update(tickets, {$splice: [[1, 1, changed_ticket]]});
+    wrapper_obj.setState({tickets: new_tickets});
     console.log('redraw1', +(new Date()) - t);
 
     t = +(new Date());
-    tickets[0] = React.addons.update(tickets[0], {'test1': {$set: '00000000'}})
-    tickets[0] = React.addons.update(tickets[0], {'test2': {$set: '00000000'}})
-    tickets[1] = React.addons.update(tickets[1], {'test1': {$set: '00000000'}})
-    tickets[2] = React.addons.update(tickets[1], {'test2': {$set: '00000000'}})
-    wrapper_obj.setState({tickets: tickets});
+    new_zero_ticket = React.addons.update(tickets[0], {'test1': {$set: '00000000'}});
+    new_zero_ticket = React.addons.update(new_zero_ticket, {'test2': {$set: '00000000'}});
+    new_tickets = React.addons.update(new_tickets, {$splice: [[0, 1, new_zero_ticket]]});
+
+    new_1_ticket = React.addons.update(tickets[1], {'test1': {$set: '00000000'}});
+    new_tickets = React.addons.update(new_tickets, {$splice: [[1, 1, new_1_ticket]]});
+
+    new_2_ticket = React.addons.update(tickets[2], {'test2': {$set: 'XXXXXXXXX'}});
+    new_tickets = React.addons.update(new_tickets, {$splice: [[2, 1, new_2_ticket]]});
+
+    wrapper_obj.setState({tickets: new_tickets});
     console.log('redraw2', +(new Date()) - t);
 
   </script>

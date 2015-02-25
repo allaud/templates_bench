@@ -2,15 +2,15 @@ var Ticket = React.createClass({
   displayName: "Ticket",
   getInitialState: function() {
     return {
-      index: this.props.index,
-      tickets: this.props.tickets,
       ticket: this.props.ticket
     };
   },
   shouldComponentUpdate: function(nextProps, nextState) {
-    var changed = this.state.ticket !== this.state.tickets[this.state.index];
+    var tickets = this.props.getTickets();
+
+    var changed = this.state.ticket !== tickets[this.props.index];
     if(changed){
-      this.state.ticket = this.state.tickets[this.state.index];
+      this.state.ticket = tickets[this.props.index];
     }
     return changed;
   },
